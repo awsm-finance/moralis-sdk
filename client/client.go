@@ -12,6 +12,7 @@ import (
 const (
 	_getTransactionsByAddress = "/%s"         // /{address}
 	_getBalanceByAddress      = "/%s/balance" // /{address}/balance
+	_getERC20BalanceByAddress = "/%s/erc20"   // /{address}/erc20
 )
 
 type Client struct {
@@ -61,6 +62,23 @@ func (c *Client) GetBalanceByAddress(inp *GetBalanceByAddressInput) (*GetBalance
 	err := c.request(path, http.MethodGet, &resp)
 
 	return &resp, err
+}
+
+func (c *Client) GetERC20BalanceByAddress(inp *GetERC20BalanceByAddressInput) ([]*GetERC20BalanceByAddressResponse, error) {
+	if err := inp.Validate(); err != nil {
+		return nil, err
+	}
+
+	path := fmt.Sprintf(_getERC20BalanceByAddress, inp.Address)
+
+	if q := inp.Query(); q != "" {
+		path = fmt.Sprintf("%s?%s", path, q)
+	}
+
+	resp := make([]*GetERC20BalanceByAddressResponse, 0)
+	err := c.request(path, http.MethodGet, &resp)
+
+	return resp, err
 }
 
 func (c *Client) request(path, method string, out interface{}) error {

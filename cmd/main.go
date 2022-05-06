@@ -47,4 +47,17 @@ func main() {
 	}
 
 	fmt.Printf("GetBalanceByAddress (%s): %+v\n", _address, respBalance)
+
+	respErc20Balance, err := c.GetERC20BalanceByAddress(&moralis.GetERC20BalanceByAddressInput{
+		Address:        _address,
+		Chain:          moralis.ChainEth,
+		TokenAddresses: []string{"0xdAC17F958D2ee523a2206206994597C13D831ec7"},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for i, balance := range respErc20Balance {
+		fmt.Printf("%d. GetERC20BalanceByAddress (%s): %+v\n", i+1, _address, balance)
+	}
 }

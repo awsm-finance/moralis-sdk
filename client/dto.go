@@ -116,3 +116,49 @@ func (r GetBalanceByAddressInput) Query() string {
 type GetBalanceByAddressResponse struct {
 	Balance string `json:"balance"`
 }
+
+type GetERC20BalanceByAddressInput struct {
+	Chain          string
+	Address        string
+	ToBlock        int
+	TokenAddresses []string
+}
+
+func (r GetERC20BalanceByAddressInput) Validate() error {
+	if r.Address == "" {
+		return errors.New("missing address in GetTransactionsByAddressInput")
+	}
+
+	return nil
+}
+
+func (r GetERC20BalanceByAddressInput) Query() string {
+	u := url.URL{}
+	values := u.Query()
+
+	if r.Chain != "" {
+		values.Add("chain", r.Chain)
+	}
+
+	if r.ToBlock != 0 {
+		values.Add("to_block", strconv.Itoa(r.ToBlock))
+	}
+
+	if r.TokenAddresses != nil && len(r.TokenAddresses) > 0 {
+		for _, address := range r.TokenAddresses {
+			values.Add("token_addresses", address)
+		}
+	}
+
+	return values.Encode()
+}
+
+type GetERC20BalanceByAddressResponse struct {
+	TokenAddress string `json:"token_address"`
+	Name         string `json:"name"`
+	Symbol       string `json:"symbol"`
+	Logo         string `json:"logo"`
+	Thumbnail    string `json:"thumbnail"`
+	Decimals     int    `json:"decimals"`
+	Balance      string `json:"balance"`
+}
