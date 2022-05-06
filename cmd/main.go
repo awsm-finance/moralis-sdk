@@ -37,4 +37,14 @@ func main() {
 	}
 
 	fmt.Printf("GetTransactionsByAddress (%s): %+v\n", _address, resp)
+
+	respBalance, err := c.GetBalanceByAddress(&moralis.GetBalanceByAddressInput{
+		Address: _address,
+		Chain:   moralis.ChainEth,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("GetBalanceByAddress (%s): %+v\n", _address, respBalance)
 }

@@ -83,3 +83,36 @@ type Transaction struct {
 	BlockNumber    string `json:"block_number"`
 	BlockHash      string `json:"block_hash"`
 }
+
+type GetBalanceByAddressInput struct {
+	Chain   string
+	Address string
+	ToBlock int
+}
+
+func (r GetBalanceByAddressInput) Validate() error {
+	if r.Address == "" {
+		return errors.New("missing address in GetTransactionsByAddressInput")
+	}
+
+	return nil
+}
+
+func (r GetBalanceByAddressInput) Query() string {
+	u := url.URL{}
+	values := u.Query()
+
+	if r.Chain != "" {
+		values.Add("chain", r.Chain)
+	}
+
+	if r.ToBlock != 0 {
+		values.Add("to_block", strconv.Itoa(r.ToBlock))
+	}
+
+	return values.Encode()
+}
+
+type GetBalanceByAddressResponse struct {
+	Balance string `json:"balance"`
+}

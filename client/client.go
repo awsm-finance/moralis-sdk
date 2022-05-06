@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	_getTransactionsByAddress = "/%s" // /{address}
+	_getTransactionsByAddress = "/%s"         // /{address}
+	_getBalanceByAddress      = "/%s/balance" // /{address}/balance
 )
 
 type Client struct {
@@ -40,6 +41,23 @@ func (c *Client) GetTransactionsByAddress(inp *GetTransactionsByAddressInput) (*
 	}
 
 	var resp GetTransactionsByAddressResponse
+	err := c.request(path, http.MethodGet, &resp)
+
+	return &resp, err
+}
+
+func (c *Client) GetBalanceByAddress(inp *GetBalanceByAddressInput) (*GetBalanceByAddressResponse, error) {
+	if err := inp.Validate(); err != nil {
+		return nil, err
+	}
+
+	path := fmt.Sprintf(_getBalanceByAddress, inp.Address)
+
+	if q := inp.Query(); q != "" {
+		path = fmt.Sprintf("%s?%s", path, q)
+	}
+
+	var resp GetBalanceByAddressResponse
 	err := c.request(path, http.MethodGet, &resp)
 
 	return &resp, err
