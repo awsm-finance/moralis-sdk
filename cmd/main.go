@@ -60,4 +60,13 @@ func main() {
 	for i, balance := range respErc20Balance {
 		fmt.Printf("%d. GetERC20BalanceByAddress (%s): %+v\n", i+1, _address, balance)
 	}
+
+	respErc20Transfers, err := c.GetERC20TransfersByAddress(&moralis.GetERC20TransfersByAddressInput{
+		Address: _address,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("GetERC20TransfersByAddress (%s): %+v\n", _address, respErc20Transfers)
 }

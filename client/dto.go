@@ -162,3 +162,76 @@ type GetERC20BalanceByAddressResponse struct {
 	Decimals     int    `json:"decimals"`
 	Balance      string `json:"balance"`
 }
+
+type GetERC20TransfersByAddressInput struct {
+	Chain     string
+	Address   string
+	FromBlock int
+	ToBlock   int
+	FromDate  string
+	ToDate    string
+	Offset    int
+	Limit     int
+	Cursor    string
+}
+
+func (r GetERC20TransfersByAddressInput) Validate() error {
+	if r.Address == "" {
+		return errors.New("missing address in GetTransactionsByAddressInput")
+	}
+
+	return nil
+}
+
+func (r GetERC20TransfersByAddressInput) Query() string {
+	u := url.URL{}
+	values := u.Query()
+
+	if r.Chain != "" {
+		values.Add("chain", r.Chain)
+	}
+
+	if r.FromBlock != 0 {
+		values.Add("from_block", strconv.Itoa(r.FromBlock))
+	}
+
+	if r.ToBlock != 0 {
+		values.Add("to_block", strconv.Itoa(r.ToBlock))
+	}
+
+	if r.FromDate != "" {
+		values.Add("from_date", r.FromDate)
+	}
+
+	if r.ToDate != "" {
+		values.Add("to_date", r.ToDate)
+	}
+
+	if r.Offset != 0 {
+		values.Add("offset", strconv.Itoa(r.Offset))
+	}
+
+	if r.Limit != 0 {
+		values.Add("limit", strconv.Itoa(r.Limit))
+	}
+
+	return values.Encode()
+}
+
+type GetERC20TransfersByAddressResponse struct {
+	Total    int                  `json:"total"`
+	Page     int                  `json:"page"`
+	PageSize int                  `json:"page_size"`
+	Result   []ERC20TokenTransfer `json:"result"`
+}
+
+type ERC20TokenTransfer struct {
+	TransactionHash string `json:"transaction_hash"`
+	Address         string `json:"address"` // address of a ERC20 token smart contract
+	BlockTimestamp  string `json:"block_timestamp"`
+	BlockNumber     string `json:"block_number"`
+	BlockHash       string `json:"block_hash"`
+	ToAddress       string `json:"to_address"`
+	FromAddress     string `json:"from_address"`
+	Value           string `json:"value"`
+}
