@@ -2,7 +2,6 @@ package moralis
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -115,7 +114,7 @@ func (c *Client) request(path, method string, out interface{}) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return errors.New("non-2XX response")
+		return fmt.Errorf("request failed, status code %d", resp.StatusCode)
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)

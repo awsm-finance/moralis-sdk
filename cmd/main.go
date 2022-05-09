@@ -31,6 +31,7 @@ func main() {
 
 	resp, err := c.GetTransactionsByAddress(&moralis.GetTransactionsByAddressInput{
 		Address: _address,
+		Chain:   moralis.ChainRopsten,
 	})
 	if err != nil {
 		log.Fatal(err)
