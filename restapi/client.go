@@ -1,4 +1,4 @@
-package moralis
+package moralisapi
 
 import (
 	"encoding/json"

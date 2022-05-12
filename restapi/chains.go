@@ -1,4 +1,4 @@
-package moralis
+package moralisapi
 
 const (
 	ChainEth              = "eth"
