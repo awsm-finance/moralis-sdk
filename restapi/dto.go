@@ -235,3 +235,26 @@ type ERC20TokenTransfer struct {
 	FromAddress     string `json:"from_address"`
 	Value           string `json:"value"`
 }
+
+type GetTransactionByHashInput struct {
+	Chain string
+	Hash  string
+}
+
+func (r GetTransactionByHashInput) Validate() error {
+	if r.Hash == "" {
+		return errors.New("missing hash in GetTransactionByHashInput")
+	}
+
+	return nil
+}
+
+func (r GetTransactionByHashInput) Query() string {
+	u := url.URL{}
+	values := u.Query()
+
+	if r.Chain != "" {
+		values.Add("chain", r.Chain)
+	}
+	return values.Encode()
+}

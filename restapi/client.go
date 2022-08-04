@@ -13,6 +13,7 @@ const (
 	_getBalanceByAddress        = "/%s/balance"         // /{address}/balance
 	_getERC20BalanceByAddress   = "/%s/erc20"           // /{address}/erc20
 	_getERC20TransfersByAddress = "/%s/erc20/transfers" // /{address}/erc20/transfers
+	_getTransactionByHash       = "/transaction/%s"     // /transaction/{hash}
 )
 
 type Client struct {
@@ -93,6 +94,23 @@ func (c *Client) GetERC20TransfersByAddress(inp *GetERC20TransfersByAddressInput
 	}
 
 	var resp GetERC20TransfersByAddressResponse
+	err := c.request(path, http.MethodGet, &resp)
+
+	return &resp, err
+}
+
+func (c *Client) GetTransactionByHash(inp *GetTransactionByHashInput) (*Transaction, error) {
+	if err := inp.Validate(); err != nil {
+		return nil, err
+	}
+
+	path := fmt.Sprintf(_getTransactionByHash, inp.Hash)
+
+	if q := inp.Query(); q != "" {
+		path = fmt.Sprintf("%s?%s", path, q)
+	}
+
+	var resp Transaction
 	err := c.request(path, http.MethodGet, &resp)
 
 	return &resp, err

@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	moraliscloud "github.com/awsm-finance/moralis-sdk/cloud"
 	moralisapi "github.com/awsm-finance/moralis-sdk/restapi"
 
 	"github.com/joho/godotenv"
@@ -14,8 +15,9 @@ import (
 const (
 	_host       = "https://deep-index.moralis.io/api/v2"
 	_serverHost = "https://wamaxhbnkkbj.usemoralis.com:2053/server"
+	// _serverHost = "https://mwq7lmluczgx.usemoralis.com:2053/server"
 
-	_address = "0xCC7BcF633f6Ce26cE3eD9E255b8eaA6f219A0956"
+	_address = "0xcc7bcf633f6ce26ce3ed9e255b8eaa6f219a0956"
 )
 
 func main() {
@@ -34,12 +36,21 @@ func main() {
 		log.Fatal("CLOUD_APP_ID is empty")
 	}
 
-	// masterKey := os.Getenv("CLOUD_MASTER_KEY")
-	// if appId == "" {
-	// 	log.Fatal("CLOUD_MASTER_KEY is empty")
-	// }
+	masterKey := os.Getenv("CLOUD_MASTER_KEY")
+	if appId == "" {
+		log.Fatal("CLOUD_MASTER_KEY is empty")
+	}
 
 	c := moralisapi.NewClient(_host, apiKey, time.Second*5)
+
+	tx, err := c.GetTransactionByHash(&moralisapi.GetTransactionByHashInput{
+		Hash: "0x25cd7f3bfc73aa0fa3ea1307b0271cb78d703594389462f596fc033ca5170c2b",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("GetTransactionByHash: %+v", tx)
 
 	// resp, err := c.GetTransactionsByAddress(&moralisapi.GetTransactionsByAddressInput{
 	// 	Address: _address,
@@ -83,10 +94,10 @@ func main() {
 
 	// fmt.Printf("GetERC20TransfersByAddress (%s): %+v\n", _address, respErc20Transfers)
 
-	// cloudClient := moraliscloud.NewClient(_serverHost, appId, masterKey, time.Second*5)
-	// if err := cloudClient.WatchEthAddress(_address); err != nil {
-	// 	log.Printf("error: %s", err.Error())
-	// } else {
-	// 	log.Println("address registered!!!!!!!")
-	// }
+	cloudClient := moraliscloud.NewClient(_serverHost, appId, masterKey, time.Second*5)
+	if err := cloudClient.WatchEthAddress(_address, true); err != nil {
+		log.Printf("error: %s", err.Error())
+	} else {
+		log.Println("address registered!!!!!!!")
+	}
 }
